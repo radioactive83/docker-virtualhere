@@ -1,8 +1,7 @@
-FROM ubuntu:24.04
+FROM alpine:3.22
 EXPOSE 7575:7575
 VOLUME ["/data"]
-RUN apt-get update
-RUN apt-get install -y wget usbutils
+RUN apk add --no-cache usbutils wget
 RUN mkdir -p /data
 COPY start-virtualhere.sh /etc/start-virtualhere.sh
 CMD sh "/etc/start-virtualhere.sh" 
