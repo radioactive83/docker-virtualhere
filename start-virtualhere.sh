@@ -17,6 +17,19 @@ fi
 echo '*** Listing all usb-devices. Use this list to adjust AllowedDevices in config.ini ...'
 lsusb || echo 'Execution of command lsusb failed. Make sure you have access to USB-Devices on the host.'
 
+echo '*** Checking file access ...2'
+test -r /sys/class/dmi/id/product_uuid || { echo 'Cannot read file /sys/class/dmi/id/product_uuid, VirtualHere will fail to start'; FILE_ACCESS_ERROR=true; }
+test -r /sys/class/dmi/id/product_serial || { echo 'Cannot read file /sys/class/dmi/id/product_serial, VirtualHere will fail to start'; FILE_ACCESS_ERROR=true; }
+
+if [ "$FILE_ACCESS_ERROR" = true ]; then
+    echo 'If running in LXC, try adding the following lines to your config:'
+    echo 'lxc.hook.pre-start: sh -c "chmod 444 /sys/class/dmi/id/product_uuid"'
+    echo 'lxc.hook.pre-start: sh -c "chmod 444 /sys/class/dmi/id/product_serial"'
+    echo 'lxc.hook.post-stop: sh -c "chmod 400 /sys/class/dmi/id/product_uuid"'
+    echo 'lxc.hook.post-stop: sh -c "chmod 400 /sys/class/dmi/id/product_serial"'
+    echo ''
+fi
+
 cd data
 
 echo '*** Deleting previous bus_usb_*-files from data directory ...'
