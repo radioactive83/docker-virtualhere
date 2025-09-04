@@ -17,9 +17,9 @@ fi
 echo '*** Listing all usb-devices. Use this list to adjust AllowedDevices in config.ini ...'
 lsusb || echo 'Execution of command lsusb failed. Make sure you have access to USB-Devices on the host.'
 
-echo '*** Checking file access ...2'
-test -r /sys/class/dmi/id/product_uuid || { echo 'Cannot read file /sys/class/dmi/id/product_uuid, VirtualHere will fail to start'; FILE_ACCESS_ERROR=true; }
-test -r /sys/class/dmi/id/product_serial || { echo 'Cannot read file /sys/class/dmi/id/product_serial, VirtualHere will fail to start'; FILE_ACCESS_ERROR=true; }
+echo '*** Checking file access ...'
+head /sys/class/dmi/id/product_uuid &> /dev/null || { echo 'Cannot read file /sys/class/dmi/id/product_uuid, VirtualHere will fail to start'; FILE_ACCESS_ERROR=true; }
+head /sys/class/dmi/id/product_serial &> /dev/null || { echo 'Cannot read file /sys/class/dmi/id/product_serial, VirtualHere will fail to start'; FILE_ACCESS_ERROR=true; }
 
 if [ "$FILE_ACCESS_ERROR" = true ]; then
     echo 'If running in LXC, try adding the following lines to your config:'
